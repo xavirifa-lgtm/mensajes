@@ -1,136 +1,134 @@
 let peer = null;
 let conn = null;
-let isHost = false;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const createRoomBtn = document.getElementById('create-room-btn');
-    const joinRoomBtn = document.getElementById('join-room-btn');
-    const myCodeDisplay = document.getElementById('my-code-display');
-    const joinCodeInput = document.getElementById('join-code-input');
-    const connectionStatus = document.getElementById('connection-status');
     const chatMessages = document.getElementById('chat-messages');
+    const autoStatus = document.getElementById('auto-connection-status');
+    let retryInterval = null;
 
-    function generateShortCode() {
-        return Math.random().toString(36).substring(2, 7).toUpperCase();
-    }
+    // Se expone esta función para ser llamada desde app.js cuando se sabe el rol
+    window.initPermanentPeer = (myRole) => {
+        // IDs fijos! Muy importante que sean únicos y distintos.
+        const myId = myRole === 'Emma' ? 'MECA-KIDS-TAB-EMMA' : 'MECA-KIDS-TAB-ABUELA';
+        const targetId = myRole === 'Emma' ? 'MECA-KIDS-TAB-ABUELA' : 'MECA-KIDS-TAB-EMMA';
 
-    function initPeer(id) {
-        // Usa el servidor por defecto de PeerJS en la nube
-        peer = new Peer(id, {
-            debug: 2
-        });
+        // Destruir peer previo si existiera (ej: tras darle al boton de cambiar tablet)
+        if(peer) {
+            peer.destroy();
+            conn = null;
+        }
+
+        peer = new Peer(myId, { debug: 2 });
 
         peer.on('open', (id) => {
-            console.log('Mi ID de PeerJS es: ' + id);
-            if(isHost) {
-                myCodeDisplay.textContent = id;
-                myCodeDisplay.classList.remove('hidden');
-                connectionStatus.textContent = 'Esperando a que la otra tablet introduzca el código... 👀';
-            }
+            console.log('Mi ID fijo es: ' + id);
+            if(autoStatus) autoStatus.textContent = 'Buscando a la otra tablet... 👀';
+            
+            // Empezar el ciclo activo de búsqueda
+            attemptConnection(targetId);
         });
 
+        // Cuando la OTRA tablet nos encuentra a nosotros
         peer.on('connection', (connection) => {
-            // Alguien se conecta a mí (si soy Host)
-            conn = connection;
-            setupConnection();
+            if(conn && conn.open) return; // ya estábamos conectados
+            console.log("¡Me han encontrado!");
+            setupConnection(connection);
         });
 
         peer.on('error', (err) => {
             console.error('PeerJS Error:', err);
-            connectionStatus.textContent = 'Error: ' + err.type;
+            if(err.type === 'unavailable-id') {
+                if(autoStatus) autoStatus.textContent = 'Error: Cierra las otras pestañas/apps que estén usando este mismo rol de Tablet.';
+            }
         });
+    };
+
+    function attemptConnection(targetId) {
+        if(conn && conn.open) return; 
+
+        console.log('Intentando conectar con ' + targetId + '...');
+        const newConn = peer.connect(targetId, { reliable: true });
+
+        newConn.on('open', () => {
+            console.log("¡He encontrado la tablet!");
+            setupConnection(newConn);
+        });
+
+        newConn.on('error', () => {
+            console.log("Aún no la encuentro...");
+            // No hacemos nada, el temporizador volverá a intentarlo.
+        });
+
+        // Loop de reintento automático infinito (ping cada 3 segundos hasta que enciendan la otra tablet)
+        clearTimeout(retryInterval);
+        retryInterval = setTimeout(() => {
+            if(!conn || !conn.open) attemptConnection(targetId);
+        }, 3000);
     }
 
-    function setupConnection() {
-        conn.on('open', () => {
-            console.log('Conexión establecida!');
-            window.goToChatScreen(); // Cambia de pantalla (desde app.js)
-            addSystemMessage('¡La otra tablet se ha conectado! 🎉');
-        });
+    function setupConnection(connection) {
+        conn = connection;
+        clearTimeout(retryInterval); // Parar el bucle de búsqueda
+        
+        window.goToChatScreen(); 
+
+        const statusBadge = document.getElementById('peer-status');
+        if(statusBadge) {
+            statusBadge.className = 'badge green';
+            statusBadge.innerHTML = '<i class="fa-solid fa-wifi"></i> Conectado';
+        }
+
+        // Limpieza fundamental de eventos para no duplicarlos si se cae y vuelve a conectar
+        conn.off('data');
+        conn.off('close');
+        conn.off('error');
 
         conn.on('data', (data) => {
-            console.log('Mensaje recibido:', data);
-            // Mostrar mensaje en UI
             window.addMessageToUI(data.text, 'received');
         });
 
-        conn.on('close', () => {
-            addSystemMessage('La otra tablet se ha desconectado. 😢');
-            const statusBadge = document.getElementById('peer-status');
-            if(statusBadge) {
-                statusBadge.className = 'badge red';
-                statusBadge.innerHTML = '<i class="fa-solid fa-wifi-slash"></i> Desconectado';
-            }
-        });
+        conn.on('close', () => handleDisconnection());
+        conn.on('error', () => handleDisconnection());
     }
 
-    createRoomBtn.addEventListener('click', () => {
-        isHost = true;
-        createRoomBtn.disabled = true;
-        const myId = "MECA-" + generateShortCode();
-        initPeer(myId);
-    });
-
-    joinRoomBtn.addEventListener('click', () => {
-        let code = joinCodeInput.value.trim().toUpperCase();
-        if (!code) {
-            alert('Introduce un código');
-            return;
+    function handleDisconnection() {
+        console.log("Desconectado.");
+        conn = null;
+        
+        const statusBadge = document.getElementById('peer-status');
+        if(statusBadge) {
+            statusBadge.className = 'badge red';
+            statusBadge.innerHTML = '<i class="fa-solid fa-wifi-slash"></i> Desconectado';
         }
         
-        // Si el codigo no tiene el prefijo MECA-, ponéselo para evitar confusiones de niños
-        const destId = code.startsWith("MECA-") ? code : "MECA-" + code;
+        // Empezar a buscar automáticamente en silencio mientras seguimos en la pantalla de chat
+        const role = localStorage.getItem('tablet_role');
+        const targetId = role === 'Emma' ? 'MECA-KIDS-TAB-ABUELA' : 'MECA-KIDS-TAB-EMMA';
+        attemptConnection(targetId);
+    }
 
-        isHost = false;
-        joinRoomBtn.disabled = true;
-        connectionStatus.textContent = 'Conectando... 🚀';
-
-        // Inicializamos nuestro propio peer sin ID fijo (aleatorio largo)
-        peer = new Peer({ debug: 2 });
-        
-        peer.on('open', () => {
-            conn = peer.connect(destId);
-            setupConnection();
-        });
-
-        peer.on('error', (err) => {
-            console.error(err);
-            connectionStatus.textContent = 'Oh oh. ¿Estás seguro de que has copiado el código bien? 🤔';
-            joinRoomBtn.disabled = false;
-        });
-    });
-
-    // Función global para enviar mensaje (llamada desde otros scripts)
+    // Funciones globales para exponerlas hacia la UI (Botón Enviar de Gemini)
     window.sendMessage = (text) => {
+        const role = localStorage.getItem('tablet_role') || 'Yo';
+        const finalMessage = `**${role}:** ${text}`;
+        
         if (conn && conn.open) {
-            conn.send({ text: text });
-            window.addMessageToUI(text, 'sent');
+            conn.send({ text: finalMessage });
+            window.addMessageToUI(finalMessage, 'sent');
         } else {
-            alert("¡Ups! Parece que no hay conexión con la otra tablet de momento. 🔌");
+            alert("¡La otra tablet no está conectada o está apagada de momento! 🔌");
         }
     };
 
-    function addSystemMessage(text) {
-        const el = document.createElement('div');
-        el.className = 'message system';
-        el.textContent = text;
-        chatMessages.appendChild(el);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    // Exportar función global para renderizar mensajes
     window.addMessageToUI = (text, type) => {
         const el = document.createElement('div');
         el.className = `message ${type}`;
-        
         if (typeof marked !== 'undefined') {
-            // Sanitiza levemente o usa marcado para bold, etc
             el.innerHTML = marked.parse(text);
         } else {
             el.textContent = text;
         }
-        
         chatMessages.appendChild(el);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+        chatMessages.scrollTop = chatMessages.scrollHeight; // Auto scroll al final
     };
 });

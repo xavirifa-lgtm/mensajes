@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- State & DOM Nodes ---
     const screens = {
         config: document.getElementById('config-screen'),
-        connect: document.getElementById('connect-screen'),
+        role: document.getElementById('role-screen'),
+        autoconnect: document.getElementById('auto-connect-screen'),
         chat: document.getElementById('chat-screen')
     };
 
@@ -19,8 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function showScreen(screenId) {
-        Object.values(screens).forEach(s => s.classList.add('hidden'));
-        screens[screenId].classList.remove('hidden');
+        Object.values(screens).forEach(s => {
+            if(s) s.classList.add('hidden');
+        });
+        if(screens[screenId]) screens[screenId].classList.remove('hidden');
     }
 
     function showOverlay(overlayKey) {
@@ -31,16 +34,14 @@ document.addEventListener('DOMContentLoaded', () => {
         overlays[overlayKey].classList.add('hidden');
     }
 
-    // --- Configuración Inicial ---
+    // --- Flujo de Configuración Inicial ---
     const apiKeyInput = document.getElementById('gemini-api-key');
     const saveConfigBtn = document.getElementById('save-config-btn');
 
-    // Comprobar si hay API Key guardada
     const savedKey = localStorage.getItem('gemini_api_key');
     if (savedKey) {
         window.GEMINI_API_KEY = savedKey;
-        // Si ya hay key, ir a pantalla de conexión
-        showScreen('connect');
+        checkRoleAndConnect();
     } else {
         showScreen('config');
     }
@@ -50,18 +51,54 @@ document.addEventListener('DOMContentLoaded', () => {
         if (val) {
             localStorage.setItem('gemini_api_key', val);
             window.GEMINI_API_KEY = val;
-            showScreen('connect');
+            checkRoleAndConnect();
         } else {
             alert("Por favor, introduce la API Key.");
         }
     });
 
+    // --- Flujo de Roles Permanentes ---
+    function checkRoleAndConnect() {
+        const role = localStorage.getItem('tablet_role');
+        if (role) {
+            startAutoConnection(role);
+        } else {
+            showScreen('role');
+        }
+    }
+
+    const btnRole1 = document.getElementById('role-1-btn');
+    const btnRole2 = document.getElementById('role-2-btn');
+    const btnResetRole = document.getElementById('reset-role-btn');
+
+    if(btnRole1) btnRole1.addEventListener('click', () => {
+        localStorage.setItem('tablet_role', 'Emma');
+        startAutoConnection('Emma');
+    });
+
+    if(btnRole2) btnRole2.addEventListener('click', () => {
+        localStorage.setItem('tablet_role', 'Abuela');
+        startAutoConnection('Abuela');
+    });
+
+    if(btnResetRole) btnResetRole.addEventListener('click', () => {
+        localStorage.removeItem('tablet_role');
+        showScreen('role');
+    });
+
+    function startAutoConnection(role) {
+        showScreen('autoconnect');
+        if(window.initPermanentPeer) window.initPermanentPeer(role);
+    }
+
     // --- Interfaz de Chat (Botones Overlays) ---
     document.getElementById('open-keyboard-btn').addEventListener('click', () => {
         showOverlay('text');
-        // Limpiamos estados al abrir
-        document.getElementById('correction-feedback').classList.add('hidden');
-        document.getElementById('correction-feedback').innerHTML = '';
+        const feedback = document.getElementById('correction-feedback');
+        if(feedback) {
+            feedback.classList.add('hidden');
+            feedback.innerHTML = '';
+        }
         setTimeout(() => document.getElementById('message-text-input').focus(), 100);
     });
 
@@ -70,21 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (window.resizeCanvas) window.resizeCanvas(); // Llamará a canvas-handler.js
     });
 
-    document.getElementById('close-text-btn').addEventListener('click', () => {
-        hideOverlay('text');
-    });
+    document.getElementById('close-text-btn').addEventListener('click', () => hideOverlay('text'));
+    document.getElementById('close-canvas-btn').addEventListener('click', () => hideOverlay('canvas'));
 
-    document.getElementById('close-canvas-btn').addEventListener('click', () => {
-        hideOverlay('canvas');
-    });
-
-    // Exponer metodos publicamente para transiciones 
-    window.goToChatScreen = () => {
-        showScreen('chat');
-    };
-    
+    // Exponer metodos publicamente
+    window.goToChatScreen = () => showScreen('chat');
     window.closeCanvasAndOpenText = () => {
         hideOverlay('canvas');
         showOverlay('text');
-    }
+    };
 });
