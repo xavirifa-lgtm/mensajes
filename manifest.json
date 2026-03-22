@@ -6,11 +6,11 @@
   "display": "standalone",
   "background_color": "#FF9A9E",
   "theme_color": "#FF9A9E",
-  "orientation": "portrait",
+  "orientation": "landscape",
   "icons": [
     {
       "src": "./icons/icon.png",
-      "sizes": "1024x1024",
+      "sizes": "192x192 512x512 1024x1024",
       "type": "image/png",
       "purpose": "any maskable"
     }

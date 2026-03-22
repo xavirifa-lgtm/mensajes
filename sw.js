@@ -1,4 +1,4 @@
-const CACHE_NAME = 'meca-mensajes-v1';
+const CACHE_NAME = 'meca-mensajes-v2';
 const ASSETS = [
     './',
     './index.html',
