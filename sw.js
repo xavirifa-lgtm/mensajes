@@ -8,6 +8,7 @@ const ASSETS = [
     './js/canvas-handler.js',
     './js/gemini-api.js',
     './manifest.json',
+    './icons/icon.png',
     'https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
     'https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js',
