@@ -24,26 +24,25 @@
             </div>
         </div>
 
-        <!-- Pantalla de Conexión -->
-        <div id="connect-screen" class="screen hidden">
-            <div class="card slide-up">
-                <h1>🚀 ¡Meca-Mensajes!</h1>
-                <p>¿Qué quieres hacer?</p>
-                
-                <div class="connect-options">
-                    <div class="box">
-                        <h3>Crear sala</h3>
-                        <button id="create-room-btn" class="btn secondary-btn"><i class="fa-solid fa-plus"></i> Generar Código</button>
-                        <div id="my-code-display" class="hidden code-display"></div>
-                    </div>
-                    <div class="divider">O</div>
-                    <div class="box">
-                        <h3>Unirse a sala</h3>
-                        <input type="text" id="join-code-input" placeholder="Escribe el código aquí..." style="text-transform: uppercase;">
-                        <button id="join-room-btn" class="btn primary-btn"><i class="fa-solid fa-link"></i> Conectar</button>
-                    </div>
+        <!-- Pantalla de Selección de Perfil (Sólo la primera vez) -->
+        <div id="role-screen" class="screen hidden">
+            <div class="card bounce-in">
+                <h1>🎮 ¿Quién eres?</h1>
+                <p>Elige tu perfil para vincular las tablets para siempre:</p>
+                <div class="connect-options" style="flex-direction: row; justify-content: space-around; margin-top:20px;">
+                    <button id="role-1-btn" class="btn primary-btn" style="width: 45%;">Soy<br>Emma</button>
+                    <button id="role-2-btn" class="btn secondary-btn" style="width: 45%;">Soy la<br>Abuela</button>
                 </div>
-                <div id="connection-status" class="status-msg"></div>
+            </div>
+        </div>
+
+        <!-- Pantalla de Conexión Automática / Cargando -->
+        <div id="auto-connect-screen" class="screen hidden">
+            <div class="card slide-up">
+                <h1>🔌 Buscando la otra tablet...</h1>
+                <p>Asegúrate de que ambas tienen la app abierta.</p>
+                <div id="auto-connection-status" class="status-msg">Conectando...</div>
+                <button id="reset-role-btn" class="btn" style="margin-top:20px; background: transparent; color:#B2BEC3; box-shadow:none; font-size:1rem;"><i class="fa-solid fa-rotate"></i> Cambiar Tablet</button>
             </div>
         </div>
 
