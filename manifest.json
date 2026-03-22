@@ -2,11 +2,10 @@
   "name": "Meca-Mensajes",
   "short_name": "MecaMsj",
   "description": "App de mensajería educativa para niños con IA",
-  "start_url": "./index.html",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#FF9A9E",
   "theme_color": "#FF9A9E",
-  "orientation": "landscape",
   "icons": [
     {
       "src": "./icons/icon.png",

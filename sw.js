@@ -1,5 +1,5 @@
-const CACHE_NAME = 'meca-mensajes-v2';
-const ASSETS = [
+const CACHE_NAME = 'meca-mensajes-v3';
+const STATIC_ASSETS = [
     './',
     './index.html',
     './css/styles.css',
@@ -7,24 +7,39 @@ const ASSETS = [
     './js/peer-conn.js',
     './js/canvas-handler.js',
     './js/gemini-api.js',
-    './manifest.json',
-    './icons/icon.png',
-    'https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap',
-    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
-    'https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js',
-    'https://cdn.jsdelivr.net/npm/marked/marked.min.js'
+    './icons/icon.png'
 ];
 
 self.addEventListener('install', (e) => {
     e.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+        caches.open(CACHE_NAME).then((cache) => {
+            return cache.addAll(STATIC_ASSETS);
+        }).catch(err => console.error('Error cacheando:', err))
     );
+    self.skipWaiting();
+});
+
+self.addEventListener('activate', (e) => {
+    e.waitUntil(
+        caches.keys().then((keys) => {
+            return Promise.all(
+                keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
+            );
+        })
+    );
+    self.clients.claim();
 });
 
 self.addEventListener('fetch', (e) => {
     e.respondWith(
         caches.match(e.request).then((res) => {
-            return res || fetch(e.request);
+            if (res) return res;
+            
+            return fetch(e.request).catch(() => {
+                if (e.request.mode === 'navigate' || e.request.headers.get('accept').includes('text/html')) {
+                    return caches.match('./index.html');
+                }
+            });
         })
     );
 });
