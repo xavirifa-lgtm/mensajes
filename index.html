@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Meca-Mensajes</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#FF9A9E">
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Pantalla de Configuración Inicial (Padres) -->
+        <div id="config-screen" class="screen">
+            <div class="card bounce-in">
+                <h1>🔧 Zona de Padres</h1>
+                <p>Por favor, introduce la API Key de Google Gemini para habilitar la magia.</p>
+                <input type="password" id="gemini-api-key" placeholder="API Key de Gemini...">
+                <button id="save-config-btn" class="btn primary-btn"><i class="fa-solid fa-check"></i> Guardar y Empezar</button>
+            </div>
+        </div>
+
+        <!-- Pantalla de Conexión -->
+        <div id="connect-screen" class="screen hidden">
+            <div class="card slide-up">
+                <h1>🚀 ¡Meca-Mensajes!</h1>
+                <p>¿Qué quieres hacer?</p>
+                
+                <div class="connect-options">
+                    <div class="box">
+                        <h3>Crear sala</h3>
+                        <button id="create-room-btn" class="btn secondary-btn"><i class="fa-solid fa-plus"></i> Generar Código</button>
+                        <div id="my-code-display" class="hidden code-display"></div>
+                    </div>
+                    <div class="divider">O</div>
+                    <div class="box">
+                        <h3>Unirse a sala</h3>
+                        <input type="text" id="join-code-input" placeholder="Escribe el código aquí..." style="text-transform: uppercase;">
+                        <button id="join-room-btn" class="btn primary-btn"><i class="fa-solid fa-link"></i> Conectar</button>
+                    </div>
+                </div>
+                <div id="connection-status" class="status-msg"></div>
+            </div>
+        </div>
+
+        <!-- Pantalla de Chat -->
+        <div id="chat-screen" class="screen hidden">
+            <header class="chat-header">
+                <h2>💬 Chat Mágico</h2>
+                <div class="header-actions">
+                    <span id="peer-status" class="badge green"><i class="fa-solid fa-wifi"></i> Conectado</span>
+                </div>
+            </header>
+            
+            <main id="chat-messages" class="messages-container">
+                <div class="message system">¡Conexión establecida! Ya podéis hablar. 🎉</div>
+            </main>
+
+            <footer class="chat-input-area">
+                <div class="input-actions">
+                    <button class="action-btn" id="open-canvas-btn" title="Dibujar"><i class="fa-solid fa-pencil"></i></button>
+                    <button class="action-btn" id="open-keyboard-btn" title="Teclado"><i class="fa-solid fa-keyboard"></i></button>
+                </div>
+            </footer>
+        </div>
+
+        <!-- Capa superpuesta: Escribir con teclado -->
+        <div id="compose-text-overlay" class="overlay hidden">
+            <div class="compose-box fly-up">
+                <div class="compose-header">
+                    <h3>Escribe tu mensaje</h3>
+                    <button class="close-btn" id="close-text-btn"><i class="fa-solid fa-times"></i></button>
+                </div>
+                <textarea id="message-text-input" placeholder="Escribe aquí..."></textarea>
+                <div class="compose-footer">
+                    <div id="correction-feedback" class="feedback-area hidden"></div>
+                    <button id="review-send-btn" class="btn primary-btn pulse"><i class="fa-solid fa-wand-magic-sparkles"></i> Revisar y Enviar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Capa superpuesta: Pizarra -->
+        <div id="canvas-overlay" class="overlay hidden">
+            <div class="canvas-box grow">
+                <div class="compose-header">
+                    <h3>Pizarra Mágica</h3>
+                    <div class="canvas-tools">
+                        <button class="tool-btn" id="clear-canvas-btn"><i class="fa-solid fa-trash"></i></button>
+                        <button class="tool-btn" id="undo-canvas-btn"><i class="fa-solid fa-rotate-left"></i></button>
+                    </div>
+                    <button class="close-btn" id="close-canvas-btn"><i class="fa-solid fa-times"></i></button>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="drawing-canvas"></canvas>
+                </div>
+                <div class="compose-footer">
+                    <button id="process-canvas-btn" class="btn primary-btn"><i class="fa-solid fa-eye"></i> Leer Dibujo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="js/gemini-api.js"></script>
+    <script src="js/peer-conn.js"></script>
+    <script src="js/canvas-handler.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
