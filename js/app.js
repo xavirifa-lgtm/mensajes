@@ -103,6 +103,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Interfaz de Chat (Botones Overlays) ---
+    const btnOpenConfig = document.getElementById('open-config-btn');
+    if (btnOpenConfig) {
+        btnOpenConfig.addEventListener('click', () => {
+            const savedKey = localStorage.getItem('gemini_api_key');
+            if (savedKey) apiKeyInput.value = savedKey; // Cargar la que hay en memoria
+            showScreen('config');
+        });
+    }
+
     document.getElementById('open-keyboard-btn').addEventListener('click', () => {
         showOverlay('text');
         const feedback = document.getElementById('correction-feedback');
