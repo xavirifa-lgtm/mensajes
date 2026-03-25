@@ -42,6 +42,27 @@ document.addEventListener('DOMContentLoaded', () => {
   "comentario": "Mensaje cortito felicitando o corrigiendo con carino..."
 }`;
 
+    // --- SISTEMA DE VOZ EDUCATIVA ---
+    function speakText(text) {
+        if (localStorage.getItem('voice_enabled') === 'false') return;
+        
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES';
+            utterance.rate = 1.0;
+            utterance.pitch = 1.3;
+            
+            const voices = window.speechSynthesis.getVoices();
+            const esVoices = voices.filter(v => v.lang.startsWith('es'));
+            if(esVoices.length > 0) {
+                const preference = esVoices.find(v => v.name.includes('Google') || v.name.includes('Monica') || v.name.includes('Helena')) || esVoices[0];
+                utterance.voice = preference;
+            }
+            window.speechSynthesis.speak(utterance);
+        }
+    }
+
     processCanvasBtn.addEventListener('click', async () => {
         if(document.getElementById('canvas-overlay').classList.contains('hidden')) {
             if(window.showCustomModal) window.showCustomModal('¡Eh!', '¡Abre el lápiz ✏️ para dibujar algo primero!', false, null);
@@ -60,8 +81,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (result && result.texto_corregido !== undefined) {
             messageTextInput.value = result.texto_corregido;
             if (result.comentario) {
-                feedbackArea.textContent = result.comentario;
+                const feedbackText = document.getElementById('correction-text');
+                if(feedbackText) feedbackText.innerHTML = `<strong>✨ Profe Búho dice:</strong><br>${result.comentario}`;
                 feedbackArea.classList.remove('hidden');
+                speakText(result.comentario);
             } else {
                 feedbackArea.classList.add('hidden');
             }
@@ -106,8 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (result) {
             messageTextInput.value = result.texto_corregido; 
             if (result.comentario) {
-                feedbackArea.textContent = result.comentario;
+                const feedbackText = document.getElementById('correction-text');
+                if(feedbackText) feedbackText.innerHTML = `<strong>✨ Profe Búho dice:</strong><br>${result.comentario}`;
                 feedbackArea.classList.remove('hidden');
+                speakText(result.comentario);
             }
             reviewSendBtn.dataset.state = "ready_to_send";
             reviewSendBtn.innerHTML = svgPlane;
