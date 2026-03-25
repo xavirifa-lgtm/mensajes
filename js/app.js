@@ -2,8 +2,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Register Service Worker ---
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js')
-            .then(reg => console.log('SW Registrado', reg))
+            .then(reg => {
+                console.log('SW Registrado', reg);
+            })
             .catch(err => console.error('Error SW', err));
+
+        // Refrescar automáticamente la app cuando detecte un nuevo Service Worker
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (!refreshing) {
+                refreshing = true;
+                window.location.reload();
+            }
+        });
     }
 
     // --- State & DOM Nodes ---
