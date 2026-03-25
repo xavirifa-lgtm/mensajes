@@ -1,4 +1,4 @@
-const CACHE_NAME = 'meca-mensajes-v10';
+const CACHE_NAME = 'meca-mensajes-v11';
 const STATIC_ASSETS = [
     './index.html',
     './css/styles.css',

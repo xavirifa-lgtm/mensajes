@@ -4,77 +4,50 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageTextInput = document.getElementById('message-text-input');
     const feedbackArea = document.getElementById('correction-feedback');
 
+    const svgSpinner = `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" class="spin" style="vertical-align:middle; margin-right:5px;"><path d="M12 4V2A10 10 0 0 0 2 12h2a8 8 0 0 1 8-8z"/></svg>`;
+    const svgWand = `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="vertical-align:middle; margin-right:5px;"><path d="M19 15l-1.5 3.5L14 20l3.5 1.5L19 25l1.5-3.5L24 20l-3.5-1.5zm-5-3.5L11.5 5 9 11.5 2 14l7 2.5L11.5 23l2.5-6.5L21 14z"/></svg>`;
+    const svgPlane = `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="vertical-align:middle; margin-right:5px;"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>`;
+    const svgEye = `<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="vertical-align:middle; margin-right:5px;"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5M12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5"/></svg>`;
+
     async function callGemini(prompt, base64Image = null) {
         if (!window.GEMINI_API_KEY) {
-            alert('¡Falta la API Key de Gemini!');
+            alert('Falta la API Key de Gemini!');
             return null;
         }
 
         const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${window.GEMINI_API_KEY}`;
-        
         const parts = [{ text: prompt }];
-        
         if (base64Image) {
-            const base64Data = base64Image.split(',')[1];
-            parts.push({
-                inline_data: {
-                    mime_type: "image/jpeg",
-                    data: base64Data
-                }
-            });
+            parts.push({ inline_data: { mime_type: "image/jpeg", data: base64Image.split(',')[1] } });
         }
-
-        const requestBody = {
-            contents: [{ parts: parts }]
-        };
-
         try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(requestBody)
-            });
-
+            const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: parts }] }) });
             const data = await response.json();
-            
-            if (data.error) {
-                console.error("Gemini API Error:", data.error);
-                alert("Error de Gemini: " + data.error.message);
-                return null;
-            }
-
+            if (data.error) { alert("Error de Gemini: " + data.error.message); return null; }
             let textResponse = data.candidates[0].content.parts[0].text;
-            
-            textResponse = textResponse.replace(/^```json\n?/, '').replace(/\n?```\n?$/, '');
-            
-            return JSON.parse(textResponse);
+            return JSON.parse(textResponse.replace(/^```json\n?/, '').replace(/\n?```\n?$/, ''));
         } catch (error) {
-            console.error("Fetch Error:", error);
-            alert("Error al conectar con la IA. Consulta la consola.");
+            alert("Error al conectar con la IA.");
             return null;
         }
     }
 
-    const systemPrompt = `Eres un profesor de primaria amable, divertido y muy cariñoso. Tu tarea es revisar lo que escribe el niño.
-Responde ÚNICAMENTE con un objeto JSON que tenga esta estructura exacta, sin texto adicional alrededor (ni etiquetas markdown de código):
+    const systemPrompt = `Eres un profesor amable y divertido. Revisa el texto y responde UNICAMENTE con un objeto JSON:
 {
-  "texto_corregido": "El texto corregido con buena ortografía (intentando respetar el mensaje original del niño).",
-  "comentario": "Un mensaje cortito (1 o 2 frases) felicitando al niño o explicando con mucho cariño las faltas de ortografía si las hay. Emojis son bienvenidos!"
+  "texto_corregido": "Texto corregido...",
+  "comentario": "Mensaje cortito felicitando o corrigiendo con carino..."
 }`;
 
     processCanvasBtn.addEventListener('click', async () => {
         const base64Image = window.getCanvasImage();
-        
         processCanvasBtn.disabled = true;
-        const originalText = processCanvasBtn.innerHTML;
-        processCanvasBtn.innerHTML = '⏳ Leyendo...';
+        processCanvasBtn.innerHTML = svgSpinner + ' Leyendo...';
 
-        const prompt = `${systemPrompt}\n\nLee el texto escrito a mano en la imagen adjunta y aplica la revisión ortográfica. Si no se entiende o es solo un dibujo, pon texto_corregido: "" y en el comentario dímelo con cariño.`;
-        
+        const prompt = `${systemPrompt}\n\nLee el texto escrito a mano en la imagen adjunta y aplica revision ortografica.`;
         const result = await callGemini(prompt, base64Image);
         
         processCanvasBtn.disabled = false;
-        processCanvasBtn.innerHTML = originalText;
+        processCanvasBtn.innerHTML = svgEye + ' Leer Dibujo';
 
         if (result && result.texto_corregido !== undefined) {
             messageTextInput.value = result.texto_corregido;
@@ -88,7 +61,7 @@ Responde ÚNICAMENTE con un objeto JSON que tenga esta estructura exacta, sin te
             if(window.clearCanvasData) window.clearCanvasData();
             
             reviewSendBtn.dataset.state = "review";
-            reviewSendBtn.innerHTML = '✨ Revisar y Enviar';
+            reviewSendBtn.innerHTML = svgWand + ' Revisar y Enviar';
             reviewSendBtn.classList.replace('secondary-btn', 'primary-btn');
         }
     });
@@ -99,37 +72,32 @@ Responde ÚNICAMENTE con un objeto JSON que tenga esta estructura exacta, sin te
 
         if(reviewSendBtn.dataset.state === "ready_to_send") {
             window.sendMessage(textToReview);
-            
             messageTextInput.value = '';
             feedbackArea.classList.add('hidden');
             reviewSendBtn.dataset.state = "review";
-            reviewSendBtn.innerHTML = '✨ Revisar y Enviar';
+            reviewSendBtn.innerHTML = svgWand + ' Revisar y Enviar';
             reviewSendBtn.classList.replace('secondary-btn', 'primary-btn');
             document.getElementById('compose-text-overlay').classList.add('hidden');
             return;
         }
 
         reviewSendBtn.disabled = true;
-        const originalText = reviewSendBtn.innerHTML;
-        reviewSendBtn.innerHTML = '⏳ Pensando...';
+        reviewSendBtn.innerHTML = svgSpinner + ' Pensando...';
 
         const prompt = `${systemPrompt}\n\nTexto a revisar:\n"${textToReview}"`;
-        
         const result = await callGemini(prompt);
         
         reviewSendBtn.disabled = false;
-        reviewSendBtn.innerHTML = originalText;
+        reviewSendBtn.innerHTML = svgWand + ' Revisar y Enviar';
 
         if (result) {
             messageTextInput.value = result.texto_corregido; 
-            
             if (result.comentario) {
                 feedbackArea.textContent = result.comentario;
                 feedbackArea.classList.remove('hidden');
             }
-            
             reviewSendBtn.dataset.state = "ready_to_send";
-            reviewSendBtn.innerHTML = '🚀 ¡Enviar Definitivo!';
+            reviewSendBtn.innerHTML = svgPlane + ' Enviar Definitivo!';
             reviewSendBtn.classList.replace('primary-btn', 'secondary-btn');
         }
     });
@@ -137,7 +105,7 @@ Responde ÚNICAMENTE con un objeto JSON que tenga esta estructura exacta, sin te
     messageTextInput.addEventListener('input', () => {
         if(reviewSendBtn.dataset.state === "ready_to_send") {
             reviewSendBtn.dataset.state = "review";
-            reviewSendBtn.innerHTML = '✨ Revisar y Enviar';
+            reviewSendBtn.innerHTML = svgWand + ' Revisar y Enviar';
             reviewSendBtn.classList.replace('secondary-btn', 'primary-btn');
             feedbackArea.classList.add('hidden');
         }

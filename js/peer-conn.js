@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusBadge = document.getElementById('peer-status');
         if(statusBadge) {
             statusBadge.className = 'badge green';
-            statusBadge.innerHTML = '🟢 Conectado';
+            statusBadge.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align:text-bottom"><path d="M12 3C7.3 3 3.06 4.72.03 7.65l1.41 1.41C4.08 6.46 7.85 5 12 5s7.92 1.46 10.56 4.06l1.41-1.41C20.94 4.72 16.7 3 12 3m0 4c-3.11 0-5.96 1.13-8.15 3.01l1.41 1.41A8.995 8.995 0 0 1 12 9c2.6 0 4.96.96 6.74 2.54l1.41-1.41C17.96 8.13 15.11 7 12 7"/></svg> Conectado`;
         }
 
         // Limpieza fundamental de eventos para no duplicarlos si se cae y vuelve a conectar
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusBadge = document.getElementById('peer-status');
         if(statusBadge) {
             statusBadge.className = 'badge red';
-            statusBadge.innerHTML = '🔴 Desconectado';
+            statusBadge.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align:text-bottom"><path d="M23.64 7c-.45-.34-4.93-4-11.64-4-1.5 0-2.89.19-4.15.48L18.18 13.8 23.64 7M17.5 10.5l3.14-3.5c-.27-.2-.93-.65-1.89-1.12l-1.25 4.62M3.27 1.27L1.44 2.7l2.87 2.87C3.12 6.16 2.14 6.64 1.63 7L12 19l4.56-5.46 3.16 3.16 1.83-1.43zM12 15L7.85 9.87l3.77 3.77z"/></svg> Desconectado`;
         }
         
         // Empezar a buscar automáticamente en silencio mientras seguimos en la pantalla de chat

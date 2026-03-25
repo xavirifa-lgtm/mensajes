@@ -16,17 +16,17 @@
         <!-- Pantalla de Configuración Inicial (Padres) -->
         <div id="config-screen" class="screen">
             <div class="card bounce-in">
-                <h1>🔧 Zona de Padres</h1>
+                <h1><svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor" style="vertical-align:bottom"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg> Zona de Padres</h1>
                 <p>Por favor, introduce la API Key de Google Gemini para habilitar la magia.</p>
                 <input type="password" id="gemini-api-key" placeholder="API Key de Gemini...">
-                <button id="save-config-btn" class="btn primary-btn">✔️ Guardar y Empezar</button>
+                <button id="save-config-btn" class="btn primary-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="vertical-align:middle"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Guardar y Empezar</button>
             </div>
         </div>
 
-        <!-- Pantalla de Selección de Perfil (Sólo la primera vez) -->
+        <!-- Pantalla de Selección de Perfil -->
         <div id="role-screen" class="screen hidden">
             <div class="card bounce-in">
-                <h1>🎮 ¿Quién eres?</h1>
+                <h1><svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor" style="vertical-align:bottom"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg> Quien eres?</h1>
                 <p>Elige tu perfil para vincular las tablets para siempre:</p>
                 <div class="connect-options" style="flex-direction: row; justify-content: space-around; margin-top:20px;">
                     <button id="role-1-btn" class="btn primary-btn" style="width: 45%;">Soy<br>Emma</button>
@@ -38,30 +38,29 @@
         <!-- Pantalla de Conexión Automática / Cargando -->
         <div id="auto-connect-screen" class="screen hidden">
             <div class="card slide-up">
-                <h1>🔌 Buscando la otra tablet...</h1>
-                <p>Asegúrate de que ambas tienen la app abierta.</p>
+                <h1><svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor" style="vertical-align:bottom"><path d="M12 3C7.3 3 3.06 4.72.03 7.65l1.41 1.41C4.08 6.46 7.85 5 12 5s7.92 1.46 10.56 4.06l1.41-1.41C20.94 4.72 16.7 3 12 3m0 4c-3.11 0-5.96 1.13-8.15 3.01l1.41 1.41A8.995 8.995 0 0 1 12 9c2.6 0 4.96.96 6.74 2.54l1.41-1.41C17.96 8.13 15.11 7 12 7"/></svg> Buscando la otra tablet...</h1>
+                <p>Asegurate de que ambas tienen la app abierta.</p>
                 <div id="auto-connection-status" class="status-msg">Conectando...</div>
-                <button id="reset-role-btn" class="btn" style="margin-top:20px; background: transparent; color:#B2BEC3; box-shadow:none; font-size:1rem;">🔄 Cambiar Tablet</button>
+                <button id="reset-role-btn" class="btn" style="margin-top:20px; background: transparent; color:#B2BEC3; box-shadow:none; font-size:1rem;"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align:middle"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg> Cambiar Tablet</button>
             </div>
         </div>
 
         <!-- Pantalla de Chat -->
         <div id="chat-screen" class="screen hidden">
             <header class="chat-header">
-                <h2>💬 Chat Mágico <span style="font-size:0.8rem; color:#B2BEC3; vertical-align:middle;">v1.0</span></h2>
+                <h2><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="vertical-align:middle"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg> Chat Magico <span style="font-size:0.8rem; color:#B2BEC3; vertical-align:middle;">v1.0</span></h2>
                 <div class="header-actions">
-                    <span id="peer-status" class="badge green">🟢 Conectado</span>
+                    <span id="peer-status" class="badge green"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align:text-bottom"><path d="M12 3C7.3 3 3.06 4.72.03 7.65l1.41 1.41C4.08 6.46 7.85 5 12 5s7.92 1.46 10.56 4.06l1.41-1.41C20.94 4.72 16.7 3 12 3m0 4c-3.11 0-5.96 1.13-8.15 3.01l1.41 1.41A8.995 8.995 0 0 1 12 9c2.6 0 4.96.96 6.74 2.54l1.41-1.41C17.96 8.13 15.11 7 12 7"/></svg> Conectado</span>
                 </div>
             </header>
             
             <main id="chat-messages" class="messages-container">
-                <div class="message system">¡Conexión establecida! Ya podéis hablar. 🎉</div>
             </main>
 
             <footer class="chat-input-area">
                 <div class="input-actions">
-                    <button class="action-btn" id="open-canvas-btn" title="Dibujar">✏️</button>
-                    <button class="action-btn" id="open-keyboard-btn" title="Teclado">⌨️</button>
+                    <button class="action-btn" id="open-canvas-btn" title="Dibujar"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75zM20.71 7.04a.996.996 0 0 0 0-1.41l-2.34-2.34a.996.996 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+                    <button class="action-btn" id="open-keyboard-btn" title="Teclado"><svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2m-9 3h2v2h-2zm0 3h2v2h-2zM8 8h2v2H8zm0 3h2v2H8zm-4-3h2v2H4zm0 3h2v2H4zm9 3H7v-2h8zm2-3h-2v-2h2zm0-3h-2V8h2zm4 3h-2v-2h2zm0-3h-2V8h2z"/></svg></button>
                 </div>
             </footer>
         </div>
@@ -71,12 +70,12 @@
             <div class="compose-box fly-up">
                 <div class="compose-header">
                     <h3>Escribe tu mensaje</h3>
-                    <button class="close-btn" id="close-text-btn">❌</button>
+                    <button class="close-btn" id="close-text-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
                 </div>
-                <textarea id="message-text-input" placeholder="Escribe aquí..."></textarea>
+                <textarea id="message-text-input" placeholder="Escribe aqui..."></textarea>
                 <div class="compose-footer">
                     <div id="correction-feedback" class="feedback-area hidden"></div>
-                    <button id="review-send-btn" class="btn primary-btn pulse">✨ Revisar y Enviar</button>
+                    <button id="review-send-btn" class="btn primary-btn pulse"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="vertical-align:middle"><path d="M19 15l-1.5 3.5L14 20l3.5 1.5L19 25l1.5-3.5L24 20l-3.5-1.5zm-5-3.5L11.5 5 9 11.5 2 14l7 2.5L11.5 23l2.5-6.5L21 14z"/></svg> Revisar y Enviar</button>
                 </div>
             </div>
         </div>
@@ -85,18 +84,18 @@
         <div id="canvas-overlay" class="overlay hidden">
             <div class="canvas-box grow">
                 <div class="compose-header">
-                    <h3>Pizarra Mágica</h3>
+                    <h3>Pizarra Magica</h3>
                     <div class="canvas-tools">
-                        <button class="tool-btn" id="clear-canvas-btn">🗑️</button>
-                        <button class="tool-btn" id="undo-canvas-btn">↩️</button>
+                        <button class="tool-btn" id="clear-canvas-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"/></svg></button>
+                        <button class="tool-btn" id="undo-canvas-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8"/></svg></button>
                     </div>
-                    <button class="close-btn" id="close-canvas-btn">❌</button>
+                    <button class="close-btn" id="close-canvas-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></button>
                 </div>
                 <div class="canvas-container">
                     <canvas id="drawing-canvas"></canvas>
                 </div>
                 <div class="compose-footer">
-                    <button id="process-canvas-btn" class="btn primary-btn">👀 Leer Dibujo</button>
+                    <button id="process-canvas-btn" class="btn primary-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" style="vertical-align:middle"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5M12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5"/></svg> Leer Dibujo</button>
                 </div>
             </div>
         </div>

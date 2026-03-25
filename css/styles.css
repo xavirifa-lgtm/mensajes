@@ -300,6 +300,13 @@ textarea#message-text-input {
     word-break: break-word;
 }
 
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+.spin {
+    animation: spin 1s linear infinite;
+}
+
 .message.sent {
     background: #FF6B6B;
     color: white;
