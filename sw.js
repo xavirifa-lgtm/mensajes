@@ -1,4 +1,4 @@
-const CACHE_NAME = 'meca-mensajes-v7';
+const CACHE_NAME = 'meca-mensajes-v8';
 const STATIC_ASSETS = [
     './index.html',
     './css/styles.css',
@@ -31,6 +31,11 @@ self.addEventListener('activate', (e) => {
 });
 
 self.addEventListener('fetch', (e) => {
+    // NUNCA cachear la API de Gemini (dejar que el navegador se encargue siempre en directo)
+    if (e.request.url.includes('generativelanguage')) {
+        return; 
+    }
+
     if (e.request.mode === 'navigate') {
         e.respondWith(
             fetch(e.request).catch(() => caches.match('./index.html'))
@@ -40,7 +45,28 @@ self.addEventListener('fetch', (e) => {
 
     e.respondWith(
         caches.match(e.request).then((res) => {
-            return res || fetch(e.request);
+            if (res) return res; // Usar memoria si ya existe
+
+            return fetch(e.request).then(response => {
+                // Prevenir cacheo de errores o respuestas incorrectas
+                if (!response || response.status !== 200 || response.type !== 'basic' && response.type !== 'cors') {
+                    // Solo cacheamos opaque opcionalmente pero evitémoslo por defecto para ser más robustos
+                    if(response.type !== 'opaque') return response;
+                }
+                
+                // Cachear de forma "fantasma" cualquier CSS, JS o Fuente solicitada por internet (Ej: FontAwesome, PeerJS)
+                if (e.request.url.startsWith('https://')) {
+                    const responseClone = response.clone();
+                    caches.open(CACHE_NAME).then(cache => {
+                        cache.put(e.request, responseClone);
+                    });
+                }
+
+                return response;
+            }).catch(err => {
+                // Silencio en modo offline
+                console.warn('Recurso no disponible offline:', e.request.url);
+            });
         })
     );
 });
