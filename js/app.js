@@ -114,6 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('open-keyboard-btn').addEventListener('click', () => {
         showOverlay('text');
+        document.getElementById('review-send-btn').style.display = 'flex';
         const feedback = document.getElementById('correction-feedback');
         if(feedback) {
             feedback.classList.add('hidden');
@@ -124,16 +125,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('open-canvas-btn').addEventListener('click', () => {
         showOverlay('canvas');
+        document.getElementById('process-canvas-btn').style.display = 'flex';
         if (window.resizeCanvas) window.resizeCanvas(); // Llamará a canvas-handler.js
     });
 
-    document.getElementById('close-text-btn').addEventListener('click', () => hideOverlay('text'));
-    document.getElementById('close-canvas-btn').addEventListener('click', () => hideOverlay('canvas'));
+    document.getElementById('close-text-btn').addEventListener('click', () => {
+        hideOverlay('text');
+        document.getElementById('review-send-btn').style.display = 'none';
+        document.getElementById('review-send-btn').style.background = '#FF6B6B'; // Reset!
+    });
+    
+    document.getElementById('close-canvas-btn').addEventListener('click', () => {
+        hideOverlay('canvas');
+        document.getElementById('process-canvas-btn').style.display = 'none';
+    });
 
     // Exponer metodos publicamente
     window.goToChatScreen = () => showScreen('chat');
     window.closeCanvasAndOpenText = () => {
         hideOverlay('canvas');
+        document.getElementById('process-canvas-btn').style.display = 'none';
         showOverlay('text');
+        document.getElementById('review-send-btn').style.display = 'flex';
     };
 });

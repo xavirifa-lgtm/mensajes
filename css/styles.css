@@ -340,7 +340,7 @@ textarea#message-text-input {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    z-index: 50;
+    z-index: 200;
 }
 
 .action-btn {
