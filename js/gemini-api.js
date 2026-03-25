@@ -36,10 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const systemPrompt = `Eres un profesor amable y divertido. Revisa el texto y responde UNICAMENTE con un objeto JSON:
+    const systemPrompt = `Eres un profesor muy cariñoso para niños pequeños. Revisa el texto y devuelve UNICAMENTE un JSON. 
+Si hay faltas, tu "comentario" debe decir EXACTAMENTE lo que estaba mal de forma súper directa y corta, sin explicar NINGUNA regla gramatical. Ejemplo: "¡Huy! 'biba' se escribe con v." o "¡Cuidado! 'hola' lleva hache." Si hay varios errores, dalos seguidos muy rápidos. Si está perfecto, diles "¡Perfecto, sin faltas!".
+Formato JSON estricto:
 {
   "texto_corregido": "Texto corregido...",
-  "comentario": "Mensaje cortito felicitando o corrigiendo con carino..."
+  "comentario": "..."
 }`;
 
     // --- SISTEMA DE VOZ EDUCATIVA ---
