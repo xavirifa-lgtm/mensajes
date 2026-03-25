@@ -45,6 +45,34 @@ document.addEventListener('DOMContentLoaded', () => {
         overlays[overlayKey].classList.add('hidden');
     }
 
+    // --- Sistema de Modales Custom ---
+    const modalOverlay = document.getElementById('custom-modal-overlay');
+    const modalTitle = document.getElementById('modal-title');
+    const modalMessage = document.getElementById('modal-message');
+    const btnModalCancel = document.getElementById('modal-cancel-btn');
+    const btnModalConfirm = document.getElementById('modal-confirm-btn');
+
+    let currentConfirmCallback = null;
+
+    window.showCustomModal = (title, message, showCancel, onConfirm) => {
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        btnModalCancel.style.display = showCancel ? 'block' : 'none';
+        currentConfirmCallback = onConfirm;
+        modalOverlay.classList.remove('hidden');
+    };
+
+    btnModalCancel.addEventListener('click', () => {
+        modalOverlay.classList.add('hidden');
+        currentConfirmCallback = null;
+    });
+
+    btnModalConfirm.addEventListener('click', () => {
+        modalOverlay.classList.add('hidden');
+        if(currentConfirmCallback) currentConfirmCallback();
+        currentConfirmCallback = null;
+    });
+
     // --- Flujo de Configuración Inicial ---
     const apiKeyInput = document.getElementById('gemini-api-key');
     const saveConfigBtn = document.getElementById('save-config-btn');
@@ -64,19 +92,27 @@ document.addEventListener('DOMContentLoaded', () => {
             window.GEMINI_API_KEY = val;
             checkRoleAndConnect();
         } else {
-            alert("Por favor, introduce la API Key.");
+            window.showCustomModal("¡Ups!", "Por favor, introduce la llave mágica de Gemini.", false, null);
         }
     });
 
     const clearHistoryBtn = document.getElementById('clear-history-btn');
     if (clearHistoryBtn) {
         clearHistoryBtn.addEventListener('click', () => {
-            if (confirm("¿Estás seguro de que quieres borrar todos los mensajes de esta tablet?")) {
-                localStorage.removeItem('chat_history');
-                const chatContainer = document.getElementById('chat-messages');
-                if (chatContainer) chatContainer.innerHTML = '';
-                alert("Historial de chat borrado correctamente.");
-            }
+            window.showCustomModal(
+                "¡Atención!",
+                "¿Seguro que quieres borrar todos los mensajes de esta tablet? No se puede deshacer.",
+                true,
+                () => {
+                    localStorage.removeItem('chat_history');
+                    const chatContainer = document.getElementById('chat-messages');
+                    if (chatContainer) chatContainer.innerHTML = '';
+                    
+                    setTimeout(() => {
+                        window.showCustomModal("¡Borrados!", "El chat se ha vaciado por completo.", false, null);
+                    }, 300);
+                }
+            );
         });
     }
 
@@ -129,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('open-keyboard-btn').addEventListener('click', () => {
         showOverlay('text');
         document.getElementById('review-send-btn').style.display = 'flex';
+        document.getElementById('close-overlay-btn').style.display = 'flex';
         const feedback = document.getElementById('correction-feedback');
         if(feedback) {
             feedback.classList.add('hidden');
@@ -140,18 +177,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('open-canvas-btn').addEventListener('click', () => {
         showOverlay('canvas');
         document.getElementById('process-canvas-btn').style.display = 'flex';
+        document.getElementById('close-overlay-btn').style.display = 'flex';
         if (window.resizeCanvas) window.resizeCanvas(); // Llamará a canvas-handler.js
     });
 
-    document.getElementById('close-text-btn').addEventListener('click', () => {
+    document.getElementById('close-overlay-btn').addEventListener('click', () => {
         hideOverlay('text');
-        document.getElementById('review-send-btn').style.display = 'none';
-        document.getElementById('review-send-btn').style.background = '#FF6B6B'; // Reset!
-    });
-    
-    document.getElementById('close-canvas-btn').addEventListener('click', () => {
         hideOverlay('canvas');
+        document.getElementById('review-send-btn').style.display = 'none';
         document.getElementById('process-canvas-btn').style.display = 'none';
+        document.getElementById('close-overlay-btn').style.display = 'none';
+        document.getElementById('review-send-btn').style.background = '#FF6B6B'; // Reset global styling
     });
 
     const textInput = document.getElementById('message-text-input');
@@ -174,5 +210,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('process-canvas-btn').style.display = 'none';
         showOverlay('text');
         document.getElementById('review-send-btn').style.display = 'flex';
+        document.getElementById('close-overlay-btn').style.display = 'flex';
     };
 });

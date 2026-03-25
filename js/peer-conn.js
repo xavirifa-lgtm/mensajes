@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             conn.send({ text: finalMessage });
             window.addMessageToUI(finalMessage, 'sent');
         } else {
-            alert("¡La otra tablet no está conectada o está apagada de momento! 🔌");
+            if(window.showCustomModal) window.showCustomModal("Nadie al otro lado", "¡La otra tablet no está conectada o está apagada de momento! 🔌", false, null);
         }
     };
 

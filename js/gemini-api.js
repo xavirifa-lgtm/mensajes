@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function callGemini(prompt, base64Image = null) {
         if (!window.GEMINI_API_KEY) {
-            alert('¡Falta la API Key de Gemini!');
+            if(window.showCustomModal) window.showCustomModal('Falta la Llave', '¡Falta la API Key de Gemini! Toca la rueda ⚙️ arriba a la derecha.', false, null);
             return null;
         }
 
@@ -24,11 +24,14 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: parts }] }) });
             const data = await response.json();
-            if (data.error) { alert("Error de Gemini: " + data.error.message); return null; }
+            if (data.error) { 
+                if(window.showCustomModal) window.showCustomModal("Error de IA", "Mensaje: " + data.error.message, false, null);
+                return null; 
+            }
             let textResponse = data.candidates[0].content.parts[0].text;
             return JSON.parse(textResponse.replace(/^```json\n?/, '').replace(/\n?```\n?$/, ''));
         } catch (error) {
-            alert("Error al conectar con la IA.");
+            if(window.showCustomModal) window.showCustomModal("Fallo de Conexión", "Error al contactar con la Inteligencia Artificial. Revisa tu internet.", false, null);
             return null;
         }
     }
@@ -41,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     processCanvasBtn.addEventListener('click', async () => {
         if(document.getElementById('canvas-overlay').classList.contains('hidden')) {
-            alert('¡Abre el lápiz ✏️ para dibujar algo primero!');
+            if(window.showCustomModal) window.showCustomModal('¡Eh!', '¡Abre el lápiz ✏️ para dibujar algo primero!', false, null);
             return;
         }
         const base64Image = window.getCanvasImage();
@@ -73,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     reviewSendBtn.addEventListener('click', async () => {
         if(document.getElementById('compose-text-overlay').classList.contains('hidden')) {
-            alert('¡Abre el teclado ⌨️ para decir algo primero!');
+            if(window.showCustomModal) window.showCustomModal('¡Ojo!', '¡Abre el teclado ⌨️ para escribir algo primero!', false, null);
             return;
         }
         const textToReview = messageTextInput.value.trim();
