@@ -1,4 +1,4 @@
-const CACHE_NAME = 'meca-mensajes-v11';
+const CACHE_NAME = 'meca-mensajes-v1.2';
 const STATIC_ASSETS = [
     './index.html',
     './css/styles.css',
@@ -7,7 +7,9 @@ const STATIC_ASSETS = [
     './js/canvas-handler.js',
     './js/gemini-api.js',
     './icons/icon-192.png',
-    './icons/icon-512.png'
+    './icons/icon-512.png',
+    './icons/pencil.png',
+    './icons/keyboard.png'
 ];
 
 self.addEventListener('install', (e) => {
