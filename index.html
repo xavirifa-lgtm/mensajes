@@ -49,7 +49,7 @@
         <!-- Pantalla de Chat -->
         <div id="chat-screen" class="screen hidden">
             <header class="chat-header">
-                <h2><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="vertical-align:middle"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg> Chat Magico <span style="font-size:0.8rem; color:#B2BEC3; vertical-align:middle;">v2.6</span></h2>
+                <h2><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" style="vertical-align:middle"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg> Chat Mágico <span style="font-size:0.8rem; color:#B2BEC3; vertical-align:middle;">v2.8</span></h2>
                 <div class="header-actions">
                     <span id="peer-status" class="badge green"><svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align:text-bottom"><path d="M12 3C7.3 3 3.06 4.72.03 7.65l1.41 1.41C4.08 6.46 7.85 5 12 5s7.92 1.46 10.56 4.06l1.41-1.41C20.94 4.72 16.7 3 12 3m0 4c-3.11 0-5.96 1.13-8.15 3.01l1.41 1.41A8.995 8.995 0 0 1 12 9c2.6 0 4.96.96 6.74 2.54l1.41-1.41C17.96 8.13 15.11 7 12 7"/></svg> Conectado</span>
                 </div>
@@ -67,9 +67,9 @@
                     <h3>Escribe tu mensaje</h3>
                 </div>
                 <textarea id="message-text-input" placeholder="Escribe aqui..."></textarea>
-                <div id="correction-feedback" class="feedback-area hidden" style="margin-top:60px; position:relative; background:#F8EFBA; padding:20px 20px 20px 110px; border-radius:30px; border:3px dashed #FDCB6E;">
-                    <img src="icons/teacher_owl.png" alt="Profesor" style="width: 140px; height: 140px; object-fit: contain; filter: drop-shadow(0px 8px 4px rgba(0,0,0,0.2)); position:absolute; left:-10px; top:-65px; z-index:10;">
-                    <div id="correction-text" style="font-size: 1.25rem; color: #2D3436; font-family: 'Nunito', sans-serif; line-height: 1.3;"></div>
+                <div id="correction-feedback" class="feedback-area hidden" style="margin-top:100px; position:relative; background:#F8EFBA; padding:20px 20px 20px 150px; border-radius:30px; border:3px dashed #FDCB6E;">
+                    <img src="icons/teacher_owl.png" alt="Profesor" style="width: 220px; height: 220px; object-fit: contain; filter: drop-shadow(0px 12px 6px rgba(0,0,0,0.25)); position:absolute; left:-30px; top:-120px; z-index:10; pointer-events:none;">
+                    <div id="correction-text" style="font-size: 1.3rem; color: #2D3436; font-family: 'Nunito', sans-serif; line-height: 1.35;"></div>
                 </div>
             </div>
         </div>
@@ -78,7 +78,7 @@
         <div id="canvas-overlay" class="overlay hidden">
             <div class="canvas-box grow">
                 <div class="compose-header">
-                    <h3>Pizarra Magica</h3>
+                    <h3>Pizarra Mágica</h3>
                     <div class="canvas-tools">
                         <button class="tool-btn" id="clear-canvas-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zM19 4h-3.5l-1-1h-5l-1 1H5v2h14z"/></svg></button>
                         <button class="tool-btn" id="undo-canvas-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62c1.39-1.16 3.16-1.88 5.12-1.88 3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8"/></svg></button>
