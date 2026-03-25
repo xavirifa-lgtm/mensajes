@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusBadge = document.getElementById('peer-status');
         if(statusBadge) {
             statusBadge.className = 'badge green';
-            statusBadge.innerHTML = '<i class="fa-solid fa-wifi"></i> Conectado';
+            statusBadge.innerHTML = '🟢 Conectado';
         }
 
         // Limpieza fundamental de eventos para no duplicarlos si se cae y vuelve a conectar
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const statusBadge = document.getElementById('peer-status');
         if(statusBadge) {
             statusBadge.className = 'badge red';
-            statusBadge.innerHTML = '<i class="fa-solid fa-wifi-slash"></i> Desconectado';
+            statusBadge.innerHTML = '🔴 Desconectado';
         }
         
         // Empezar a buscar automáticamente en silencio mientras seguimos en la pantalla de chat

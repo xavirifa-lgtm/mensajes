@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const parts = [{ text: prompt }];
         
         if (base64Image) {
-            // Remove the data:image/jpeg;base64, prefix
             const base64Data = base64Image.split(',')[1];
             parts.push({
                 inline_data: {
@@ -46,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let textResponse = data.candidates[0].content.parts[0].text;
             
-            // Clean up backticks from JSON markdown if Gemini returns it
             textResponse = textResponse.replace(/^```json\n?/, '').replace(/\n?```\n?$/, '');
             
             return JSON.parse(textResponse);
@@ -69,7 +67,7 @@ Responde ÚNICAMENTE con un objeto JSON que tenga esta estructura exacta, sin te
         
         processCanvasBtn.disabled = true;
         const originalText = processCanvasBtn.innerHTML;
-        processCanvasBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Leyendo...';
+        processCanvasBtn.innerHTML = '⏳ Leyendo...';
 
         const prompt = `${systemPrompt}\n\nLee el texto escrito a mano en la imagen adjunta y aplica la revisión ortográfica. Si no se entiende o es solo un dibujo, pon texto_corregido: "" y en el comentario dímelo con cariño.`;
         
@@ -86,14 +84,11 @@ Responde ÚNICAMENTE con un objeto JSON que tenga esta estructura exacta, sin te
             } else {
                 feedbackArea.classList.add('hidden');
             }
-            // Switch view
             if(window.closeCanvasAndOpenText) window.closeCanvasAndOpenText();
-            // Clear canvas
             if(window.clearCanvasData) window.clearCanvasData();
             
-            // Ponemos el botón en 'review' reseteado
             reviewSendBtn.dataset.state = "review";
-            reviewSendBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Revisar y Enviar';
+            reviewSendBtn.innerHTML = '✨ Revisar y Enviar';
             reviewSendBtn.classList.replace('secondary-btn', 'primary-btn');
         }
     });
@@ -102,15 +97,13 @@ Responde ÚNICAMENTE con un objeto JSON que tenga esta estructura exacta, sin te
         const textToReview = messageTextInput.value.trim();
         if (!textToReview) return;
 
-        // Si ya está revisado y el usuario le da a Enviar Definitivo
         if(reviewSendBtn.dataset.state === "ready_to_send") {
             window.sendMessage(textToReview);
             
-            // Reset & Close
             messageTextInput.value = '';
             feedbackArea.classList.add('hidden');
             reviewSendBtn.dataset.state = "review";
-            reviewSendBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Revisar y Enviar';
+            reviewSendBtn.innerHTML = '✨ Revisar y Enviar';
             reviewSendBtn.classList.replace('secondary-btn', 'primary-btn');
             document.getElementById('compose-text-overlay').classList.add('hidden');
             return;
@@ -118,7 +111,7 @@ Responde ÚNICAMENTE con un objeto JSON que tenga esta estructura exacta, sin te
 
         reviewSendBtn.disabled = true;
         const originalText = reviewSendBtn.innerHTML;
-        reviewSendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Pensando...';
+        reviewSendBtn.innerHTML = '⏳ Pensando...';
 
         const prompt = `${systemPrompt}\n\nTexto a revisar:\n"${textToReview}"`;
         
@@ -135,18 +128,16 @@ Responde ÚNICAMENTE con un objeto JSON que tenga esta estructura exacta, sin te
                 feedbackArea.classList.remove('hidden');
             }
             
-            // Cambiar a estado enviar final
             reviewSendBtn.dataset.state = "ready_to_send";
-            reviewSendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ¡Enviar Definitivo!';
+            reviewSendBtn.innerHTML = '🚀 ¡Enviar Definitivo!';
             reviewSendBtn.classList.replace('primary-btn', 'secondary-btn');
         }
     });
 
-    // Resetear el boton si cambian el texto
     messageTextInput.addEventListener('input', () => {
         if(reviewSendBtn.dataset.state === "ready_to_send") {
             reviewSendBtn.dataset.state = "review";
-            reviewSendBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Revisar y Enviar';
+            reviewSendBtn.innerHTML = '✨ Revisar y Enviar';
             reviewSendBtn.classList.replace('secondary-btn', 'primary-btn');
             feedbackArea.classList.add('hidden');
         }

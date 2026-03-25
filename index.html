@@ -10,7 +10,6 @@
     <meta name="theme-color" content="#FF9A9E">
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <div id="app">
@@ -20,7 +19,7 @@
                 <h1>🔧 Zona de Padres</h1>
                 <p>Por favor, introduce la API Key de Google Gemini para habilitar la magia.</p>
                 <input type="password" id="gemini-api-key" placeholder="API Key de Gemini...">
-                <button id="save-config-btn" class="btn primary-btn"><i class="fa-solid fa-check"></i> Guardar y Empezar</button>
+                <button id="save-config-btn" class="btn primary-btn">✔️ Guardar y Empezar</button>
             </div>
         </div>
 
@@ -42,7 +41,7 @@
                 <h1>🔌 Buscando la otra tablet...</h1>
                 <p>Asegúrate de que ambas tienen la app abierta.</p>
                 <div id="auto-connection-status" class="status-msg">Conectando...</div>
-                <button id="reset-role-btn" class="btn" style="margin-top:20px; background: transparent; color:#B2BEC3; box-shadow:none; font-size:1rem;"><i class="fa-solid fa-rotate"></i> Cambiar Tablet</button>
+                <button id="reset-role-btn" class="btn" style="margin-top:20px; background: transparent; color:#B2BEC3; box-shadow:none; font-size:1rem;">🔄 Cambiar Tablet</button>
             </div>
         </div>
 
@@ -51,7 +50,7 @@
             <header class="chat-header">
                 <h2>💬 Chat Mágico</h2>
                 <div class="header-actions">
-                    <span id="peer-status" class="badge green"><i class="fa-solid fa-wifi"></i> Conectado</span>
+                    <span id="peer-status" class="badge green">🟢 Conectado</span>
                 </div>
             </header>
             
@@ -61,8 +60,8 @@
 
             <footer class="chat-input-area">
                 <div class="input-actions">
-                    <button class="action-btn" id="open-canvas-btn" title="Dibujar"><i class="fa-solid fa-pencil"></i></button>
-                    <button class="action-btn" id="open-keyboard-btn" title="Teclado"><i class="fa-solid fa-keyboard"></i></button>
+                    <button class="action-btn" id="open-canvas-btn" title="Dibujar">✏️</button>
+                    <button class="action-btn" id="open-keyboard-btn" title="Teclado">⌨️</button>
                 </div>
             </footer>
         </div>
@@ -72,12 +71,12 @@
             <div class="compose-box fly-up">
                 <div class="compose-header">
                     <h3>Escribe tu mensaje</h3>
-                    <button class="close-btn" id="close-text-btn"><i class="fa-solid fa-times"></i></button>
+                    <button class="close-btn" id="close-text-btn">❌</button>
                 </div>
                 <textarea id="message-text-input" placeholder="Escribe aquí..."></textarea>
                 <div class="compose-footer">
                     <div id="correction-feedback" class="feedback-area hidden"></div>
-                    <button id="review-send-btn" class="btn primary-btn pulse"><i class="fa-solid fa-wand-magic-sparkles"></i> Revisar y Enviar</button>
+                    <button id="review-send-btn" class="btn primary-btn pulse">✨ Revisar y Enviar</button>
                 </div>
             </div>
         </div>
@@ -88,16 +87,16 @@
                 <div class="compose-header">
                     <h3>Pizarra Mágica</h3>
                     <div class="canvas-tools">
-                        <button class="tool-btn" id="clear-canvas-btn"><i class="fa-solid fa-trash"></i></button>
-                        <button class="tool-btn" id="undo-canvas-btn"><i class="fa-solid fa-rotate-left"></i></button>
+                        <button class="tool-btn" id="clear-canvas-btn">🗑️</button>
+                        <button class="tool-btn" id="undo-canvas-btn">↩️</button>
                     </div>
-                    <button class="close-btn" id="close-canvas-btn"><i class="fa-solid fa-times"></i></button>
+                    <button class="close-btn" id="close-canvas-btn">❌</button>
                 </div>
                 <div class="canvas-container">
                     <canvas id="drawing-canvas"></canvas>
                 </div>
                 <div class="compose-footer">
-                    <button id="process-canvas-btn" class="btn primary-btn"><i class="fa-solid fa-eye"></i> Leer Dibujo</button>
+                    <button id="process-canvas-btn" class="btn primary-btn">👀 Leer Dibujo</button>
                 </div>
             </div>
         </div>
