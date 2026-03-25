@@ -36,16 +36,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const systemPrompt = `Eres un profesor muy cariñoso para niños pequeños. Revisa el texto y devuelve UNICAMENTE un JSON. 
+    function getDynamicPrompt() {
+        const userName = (window.myRole === 'MECA-KIDS-TAB-ABUELA') ? 'Abuela' : 'Emma';
+        return `Eres un profesor muy cariñoso. La persona que te escribe ahora mismo se llama ${userName}. Revisa el texto y devuelve UNICAMENTE un JSON. 
 Regla 1: PROHIBIDO USAR EMOJIS o iconos en tu comentario. NUNCA pongas emojis. Usa solo letras puras.
-Regla 2: ESTÁ PROHIBIDO decir "Te he corregido algunas cosas" o resúmenes parecidos. Tienes la OBLIGACIÓN ABSOLUTA de mencionar UNA A UNA todas y cada una de las palabras que estaban mal escritas y decir cómo se escriben correctamente.
-Regla 3: No des lecciones ni expliques reglas ortográficas. Solo menciona el error exacto. Ejemplo obligatorio: "¡Huy! Se escribe 'viva' con uve, no 'bibia'. Y cuidado, 'hola' va con hache, no 'ola'."
-Regla 4: Si está perfecto, di solamente: "¡Perfecto, sin faltas!".
+Regla 2: ESTÁ PROHIBIDO dar resúmenes. Tienes la OBLIGACIÓN ABSOLUTA de mencionar UNA A UNA todas y cada una de las palabras mal escritas y decir cómo se escriben correctamente.
+Regla 3: No des lecciones ni expliques reglas ortográficas. Solo menciona el error exacto. TIENES QUE DIRIGIRTE A ${userName} POR SU NOMBRE. Ejemplo obligatorio: "¡Huy ${userName}! Se escribe 'viva' con uve, no 'bibia'." o "¡Cuidado ${userName}! 'hola' va con hache, no 'ola'."
+Regla 4: Si está perfecto, di solamente: "¡Perfecto ${userName}, sin faltas!".
 Formato JSON estricto:
 {
   "texto_corregido": "Texto corregido...",
   "comentario": "..."
 }`;
+    }
 
     // --- SISTEMA DE VOZ EDUCATIVA ---
     function speakText(text) {
@@ -77,7 +80,7 @@ Formato JSON estricto:
         processCanvasBtn.disabled = true;
         processCanvasBtn.innerHTML = svgSpinner;
 
-        const prompt = `${systemPrompt}\n\nLee el texto escrito a mano en la imagen adjunta y aplica revision ortografica.`;
+        const prompt = `${getDynamicPrompt()}\n\nLee el texto escrito a mano en la imagen adjunta y aplica revision ortografica.`;
         const result = await callGemini(prompt, base64Image);
         
         processCanvasBtn.disabled = false;
@@ -125,7 +128,7 @@ Formato JSON estricto:
         reviewSendBtn.disabled = true;
         reviewSendBtn.innerHTML = svgSpinner;
 
-        const prompt = `${systemPrompt}\n\nTexto a revisar:\n"${textToReview}"`;
+        const prompt = `${getDynamicPrompt()}\n\nTexto a revisar:\n"${textToReview}"`;
         const result = await callGemini(prompt);
         
         reviewSendBtn.disabled = false;
