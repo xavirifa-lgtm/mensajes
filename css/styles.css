@@ -342,6 +342,9 @@ textarea#message-text-input {
     gap: 15px;
     z-index: 200;
 }
+.floating-actions.hidden {
+    display: none !important;
+}
 
 .action-btn {
     width: 60px;

@@ -103,11 +103,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Interfaz de Chat (Botones Overlays) ---
+    const globalFloatingActions = document.getElementById('global-floating-actions');
     const btnOpenConfig = document.getElementById('open-config-btn');
     if (btnOpenConfig) {
         btnOpenConfig.addEventListener('click', () => {
             const savedKey = localStorage.getItem('gemini_api_key');
             if (savedKey) apiKeyInput.value = savedKey; // Cargar la que hay en memoria
+            globalFloatingActions.classList.add('hidden');
             showScreen('config');
         });
     }
@@ -141,7 +143,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Exponer metodos publicamente
-    window.goToChatScreen = () => showScreen('chat');
+    window.goToChatScreen = () => {
+        showScreen('chat');
+        globalFloatingActions.classList.remove('hidden');
+    };
     window.closeCanvasAndOpenText = () => {
         hideOverlay('canvas');
         document.getElementById('process-canvas-btn').style.display = 'none';
