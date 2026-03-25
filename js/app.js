@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (clearHistoryBtn) {
         clearHistoryBtn.addEventListener('click', () => {
             if (confirm("¿Estás seguro de que quieres borrar todos los mensajes de esta tablet?")) {
-                localStorage.removeItem('meca_chat_history');
+                localStorage.removeItem('chat_history');
                 const chatContainer = document.getElementById('chat-messages');
                 if (chatContainer) chatContainer.innerHTML = '';
                 alert("Historial de chat borrado correctamente.");
