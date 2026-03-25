@@ -142,6 +142,16 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('process-canvas-btn').style.display = 'none';
     });
 
+    const textInput = document.getElementById('message-text-input');
+    if (textInput) {
+        textInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                textInput.blur(); // Cierra el teclado virtual en tablets
+            }
+        });
+    }
+
     // Exponer metodos publicamente
     window.goToChatScreen = () => {
         showScreen('chat');

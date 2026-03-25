@@ -40,6 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
 }`;
 
     processCanvasBtn.addEventListener('click', async () => {
+        if(document.getElementById('canvas-overlay').classList.contains('hidden')) {
+            alert('¡Abre el lápiz ✏️ para dibujar algo primero!');
+            return;
+        }
         const base64Image = window.getCanvasImage();
         processCanvasBtn.disabled = true;
         processCanvasBtn.innerHTML = svgSpinner;
@@ -68,6 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     reviewSendBtn.addEventListener('click', async () => {
+        if(document.getElementById('compose-text-overlay').classList.contains('hidden')) {
+            alert('¡Abre el teclado ⌨️ para decir algo primero!');
+            return;
+        }
         const textToReview = messageTextInput.value.trim();
         if (!textToReview) return;
 
