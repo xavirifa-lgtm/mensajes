@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         conn.off('error');
 
         conn.on('data', (data) => {
-            window.addMessageToUI(data.text, 'received');
+            window.addMessageToUI(data.text, 'received', data.image);
         });
 
         conn.on('close', () => handleDisconnection());
@@ -108,13 +108,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Funciones globales para exponerlas hacia la UI (Botón Enviar de Gemini)
-    window.sendMessage = (text) => {
+    window.sendMessage = (text, image = null) => {
         const role = localStorage.getItem('tablet_role') || 'Yo';
         const finalMessage = `**${role}:** ${text}`;
         
         if (conn && conn.open) {
-            conn.send({ text: finalMessage });
-            window.addMessageToUI(finalMessage, 'sent');
+            conn.send({ text: finalMessage, image: image });
+            window.addMessageToUI(finalMessage, 'sent', image);
         } else {
             if(window.showCustomModal) window.showCustomModal("Nadie al otro lado", "¡La otra tablet no está conectada o está apagada de momento! 🔌", false, null);
         }
@@ -129,38 +129,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 head.className = 'message system';
                 head.textContent = 'Mensajes anteriores 👇';
                 chatMessages.appendChild(head);
-                history.forEach(msg => renderMessageElement(msg.text, msg.type));
+                history.forEach(msg => renderMessageElement(msg.text, msg.type, msg.image || null));
             }
         }
     }
 
-    function saveMessageToHistory(text, type) {
+    function saveMessageToHistory(text, type, image = null) {
         let history = [];
         const historyJSON = localStorage.getItem('chat_history');
         if (historyJSON) {
             history = JSON.parse(historyJSON);
         }
-        history.push({ text: text, type: type, timestamp: Date.now() });
+        history.push({ text: text, type: type, image: image, timestamp: Date.now() });
         // Mantener como máximo los últimos 300 mensajes guardados en la tablet
         if (history.length > 300) history.shift();
         localStorage.setItem('chat_history', JSON.stringify(history));
     }
 
-    function renderMessageElement(text, type) {
+    function renderMessageElement(text, type, image = null) {
         const el = document.createElement('div');
         el.className = `message ${type}`;
+        
+        let contentHTML = '';
         if (typeof marked !== 'undefined') {
-            el.innerHTML = marked.parse(text);
+            contentHTML = marked.parse(text);
         } else {
-            el.textContent = text;
+            contentHTML = text;
         }
+
+        if (image) {
+            contentHTML += `<br><img src="${image}" style="max-width: 100%; border-radius: 10px; margin-top: 10px; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">`;
+        }
+        
+        el.innerHTML = contentHTML;
         chatMessages.appendChild(el);
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    window.addMessageToUI = (text, type) => {
-        renderMessageElement(text, type);
-        saveMessageToHistory(text, type);
+    window.addMessageToUI = (text, type, image = null) => {
+        renderMessageElement(text, type, image);
+        saveMessageToHistory(text, type, image);
     };
 
     // Al arrancar, mostrar los mensajes antiguos

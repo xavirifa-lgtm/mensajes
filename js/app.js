@@ -218,6 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('close-overlay-btn').style.display = 'none';
         document.getElementById('review-send-btn').style.background = '#FF6B6B'; // Reset global styling
         if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        window.pendingCanvasImage = null;
     });
 
     const textInput = document.getElementById('message-text-input');

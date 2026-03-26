@@ -88,6 +88,8 @@ Formato JSON estricto:
 
         if (result && result.texto_corregido !== undefined) {
             messageTextInput.value = result.texto_corregido;
+            window.pendingCanvasImage = base64Image; // Cache drawing for transit
+            
             if (result.comentario) {
                 const feedbackText = document.getElementById('correction-text');
                 if(feedbackText) feedbackText.innerHTML = `<strong>✨ Profe Búho dice:</strong><br>${result.comentario}`;
@@ -99,9 +101,10 @@ Formato JSON estricto:
             if(window.closeCanvasAndOpenText) window.closeCanvasAndOpenText();
             if(window.clearCanvasData) window.clearCanvasData();
             
-            reviewSendBtn.dataset.state = "review";
-            reviewSendBtn.innerHTML = svgWand;
-            reviewSendBtn.style.background = '#FF6B6B';
+            // Skip the review state to jump directly to ready_to_send
+            reviewSendBtn.dataset.state = "ready_to_send";
+            reviewSendBtn.innerHTML = svgPlane;
+            reviewSendBtn.style.background = '#4ECDC4';
         }
     });
 
@@ -114,9 +117,13 @@ Formato JSON estricto:
         if (!textToReview) return;
 
         if(reviewSendBtn.dataset.state === "ready_to_send") {
-            window.sendMessage(textToReview);
+            const imgToSend = window.pendingCanvasImage || null;
+            window.sendMessage(textToReview, imgToSend);
+            
             messageTextInput.value = '';
+            window.pendingCanvasImage = null; // Clear cached drawing
             feedbackArea.classList.add('hidden');
+            
             reviewSendBtn.dataset.state = "review";
             reviewSendBtn.innerHTML = svgWand;
             reviewSendBtn.style.background = '#FF6B6B';
