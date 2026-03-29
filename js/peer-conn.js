@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatMessages = document.getElementById('chat-messages');
     const autoStatus = document.getElementById('auto-connection-status');
     let retryInterval = null;
+    let heartbeatInterval = null;
+    let lastSeen = Date.now();
+
+    function updateLastSeen() {
+        lastSeen = Date.now();
+    }
 
     // Se expone esta función para ser llamada desde app.js cuando se sabe el rol
     window.initPermanentPeer = (myRole) => {
@@ -83,7 +89,28 @@ document.addEventListener('DOMContentLoaded', () => {
         conn.off('close');
         conn.off('error');
 
+        updateLastSeen();
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = setInterval(() => {
+            if (conn && conn.open) {
+                conn.send({ type: 'ping' });
+                // Si pasan 12 segundos sin latido de la otra tablet (ni ping ni pong ni mensajes), se asume colgada
+                if (Date.now() - lastSeen > 12000) {
+                    console.log("Heartbeat timeout! Reiniciando conexión...");
+                    handleDisconnection();
+                }
+            }
+        }, 4000);
+
         conn.on('data', (data) => {
+            updateLastSeen();
+            if (data && data.type === 'ping') {
+                if (conn && conn.open) conn.send({ type: 'pong' });
+                return;
+            }
+            if (data && data.type === 'pong') {
+                return;
+            }
             window.addMessageToUI(data.text, 'received', data.image);
         });
 
@@ -94,17 +121,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleDisconnection() {
         console.log("Desconectado.");
         conn = null;
+        clearInterval(heartbeatInterval);
         
         const statusBadge = document.getElementById('peer-status');
         if(statusBadge) {
             statusBadge.className = 'badge red';
             statusBadge.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align:text-bottom"><path d="M23.64 7c-.45-.34-4.93-4-11.64-4-1.5 0-2.89.19-4.15.48L18.18 13.8 23.64 7M17.5 10.5l3.14-3.5c-.27-.2-.93-.65-1.89-1.12l-1.25 4.62M3.27 1.27L1.44 2.7l2.87 2.87C3.12 6.16 2.14 6.64 1.63 7L12 19l4.56-5.46 3.16 3.16 1.83-1.43zM12 15L7.85 9.87l3.77 3.77z"/></svg> Desconectado`;
+            statusBadge.style.cursor = 'pointer';
+            statusBadge.title = "Toca para forzar reconexión";
+            statusBadge.onclick = () => { window.initPermanentPeer(localStorage.getItem('tablet_role')); };
         }
         
-        // Empezar a buscar automáticamente en silencio mientras seguimos en la pantalla de chat
+        // Empezar a buscar de forma robusta reiniciando el PeerJS entero para evitar desconexiones zombies (falla silenciosa)
         const role = localStorage.getItem('tablet_role');
-        const targetId = role === 'Emma' ? 'MECA-KIDS-TAB-ABUELA' : 'MECA-KIDS-TAB-EMMA';
-        attemptConnection(targetId);
+        if(role) {
+            setTimeout(() => {
+                if (!conn) window.initPermanentPeer(role);
+            }, 2000);
+        }
     }
 
     // Funciones globales para exponerlas hacia la UI (Botón Enviar de Gemini)

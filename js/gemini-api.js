@@ -37,17 +37,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getDynamicPrompt() {
-        const userName = (window.myRole === 'MECA-KIDS-TAB-ABUELA') ? 'Abuela' : 'Emma';
-        return `Eres un profesor muy cariñoso de España. La persona que te escribe se llama ${userName}. Revisa el texto y devuelve UNICAMENTE un JSON. 
-Regla 1: PROHIBIDO USAR EMOJIS. Usa solo letras puras.
+        const userName = localStorage.getItem('tablet_role') || 'Emma';
+        return `Eres un profesor muy cariñoso de España. La persona que te escribe se llama ${userName}. Revisa la entrada y devuelve UNICAMENTE un JSON. 
+Regla 1: EMOJIS PERMITIDOS. RESPETA TODOS los emojis que el usuario haya escrito en el texto y no los borres. Además, si analizas una imagen y el usuario ha dibujado símbolos básicos (como un corazón, estrella, cara sonriente), conviértelos en su emoji correspondiente (ej: ❤️, ⭐, 😊) y añádelos dentro de "texto_corregido".
 Regla 2: Usa SIEMPRE Español de España (Castellano). Por ejemplo, usa "¿Qué haces?" en lugar de "¿Qué hace?".
 Regla 3: Tienes la OBLIGACIÓN de mencionar UNA A UNA las palabras mal escritas y decir cómo se escriben correctamente.
-Regla 4: No des lecciones aburridas. Solo menciona el error exacto y dirígete a ${userName} por su nombre. Ejemplo: "¡Huy ${userName}! Se escribe 'viva' con uve, no 'bibia'. Y recuerda, se dice 'haces' con ce y termina en ese."
+Regla 4: No des lecciones aburridas. Solo menciona el error exacto y dirígete a ${userName} por su nombre.
 Regla 5: Si está perfecto, di solamente: "¡Perfecto ${userName}, sin faltas!".
+Regla 6 (IMPORTANTE): Si la imagen es PRINCIPALMENTE un dibujo grande o complejo (una casa, un coche, monigotes), pon "es_dibujo": true. Si es texto, aunque lo acompañen dibujitos sueltos como corazones o estrellas, pon "es_dibujo": false.
 Formato JSON estricto:
 {
   "texto_corregido": "Texto corregido...",
-  "comentario": "..."
+  "comentario": "...",
+  "es_dibujo": false
 }`;
     }
 
@@ -81,7 +83,7 @@ Formato JSON estricto:
         processCanvasBtn.disabled = true;
         processCanvasBtn.innerHTML = svgSpinner;
 
-        const prompt = `${getDynamicPrompt()}\n\nLee el texto escrito a mano en la imagen adjunta y aplica revision ortografica.`;
+        const prompt = `${getDynamicPrompt()}\n\nAnaliza la imagen adjunta. Si es texto a mano, extraelo y corrígelo. Si es un dibujo, pon es_dibujo a true y descríbelo si quieres.`;
         const result = await callGemini(prompt, base64Image);
         
         processCanvasBtn.disabled = false;
@@ -89,7 +91,7 @@ Formato JSON estricto:
 
         if (result && result.texto_corregido !== undefined) {
             messageTextInput.value = result.texto_corregido;
-            window.pendingCanvasImage = base64Image; // Cache drawing for transit
+            window.pendingCanvasImage = result.es_dibujo ? base64Image : null; // Cache drawing ONLY if it's a drawing
             
             if (result.comentario) {
                 const feedbackText = document.getElementById('correction-text');
