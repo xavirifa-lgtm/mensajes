@@ -290,11 +290,19 @@ textarea#message-text-input {
 
 .messages-container {
     flex: 1;
-    padding: 20px 20px 120px 20px; /* 120px extra padding at bottom to clear tablet bezels or nav bars */
+    padding: 20px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     gap: 15px;
+}
+
+.messages-container::after {
+    content: "";
+    display: block;
+    height: 180px; /* Big empty space at the bottom to force scroll clearance */
+    min-height: 180px;
+    flex-shrink: 0;
 }
 
 .message {
