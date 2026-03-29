@@ -290,7 +290,7 @@ textarea#message-text-input {
 
 .messages-container {
     flex: 1;
-    padding: 20px;
+    padding: 20px 20px 120px 20px; /* 120px extra padding at bottom to clear tablet bezels or nav bars */
     overflow-y: auto;
     display: flex;
     flex-direction: column;
